@@ -8,11 +8,11 @@ public class Task {
     }
 
     public void markAsDone() {
-        this.isDone = true;
+        isDone = true;
     }
 
     public void markAsNotDone() {
-        this.isDone = false;
+        isDone = false;
     }
 
     public String getStatusIcon() {
@@ -20,6 +20,11 @@ public class Task {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + getStatusIcon() + "] " + description;
     }
 }
