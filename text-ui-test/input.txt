@@ -1,0 +1,13 @@
+todo read book
+deadline submit report /by Friday 5pm
+event project meeting /from Monday 2pm /to 4pm
+list
+mark 1
+mark 2
+unmark 2
+list
+todo buy groceries
+event team outing /from Sunday 10am /to 1pm
+deadline renew passport /by next Thursday
+list
+bye
