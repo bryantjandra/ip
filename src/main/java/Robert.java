@@ -1,6 +1,16 @@
 import java.util.Scanner;
 
+/**
+ * The main class of the Robert chatbot, which reads commands from the user
+ * and executes them until the user types "bye".
+ */
 public class Robert {
+    /**
+     * Entry point of the Robert chatbot.
+     * Reads user commands, processes them, and produces output accordingly.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         String line = "____________________________________________________________";
         Scanner sc = new Scanner(System.in);
