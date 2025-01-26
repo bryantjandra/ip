@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -20,8 +21,7 @@ public class Robert {
         System.out.println(" What can I do for you?");
         System.out.println(line);
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         while (true) {
             String userCommand = sc.nextLine().trim();
@@ -34,8 +34,8 @@ public class Robert {
 
                 } else if (userCommand.equals("list")) {
                     System.out.println(" Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks[i].toString());
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
                     System.out.println(line);
 
@@ -45,13 +45,13 @@ public class Robert {
                         throw new RobertException("Please specify which task to mark!");
                     }
                     int taskNum = Integer.parseInt(parts[1]);
-                    if (taskNum < 1 || taskNum > taskCount) {
+                    if (taskNum < 1 || taskNum > tasks.size()) {
                         throw new RobertException("Task number is out of range!");
                     }
 
-                    tasks[taskNum - 1].markAsDone();
+                    tasks.get(taskNum - 1).markAsDone();
                     System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("   " + tasks[taskNum - 1]);
+                    System.out.println("   " + tasks.get(taskNum - 1));
                     System.out.println(line);
 
                 } else if (userCommand.startsWith("unmark ")) {
@@ -60,13 +60,29 @@ public class Robert {
                         throw new RobertException("Please specify which task to unmark!");
                     }
                     int taskNum = Integer.parseInt(parts[1]);
-                    if (taskNum < 1 || taskNum > taskCount) {
+                    if (taskNum < 1 || taskNum > tasks.size()) {
                         throw new RobertException("Task number is out of range!");
                     }
 
-                    tasks[taskNum - 1].markAsNotDone();
+                    tasks.get(taskNum - 1).markAsNotDone();
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("   " + tasks[taskNum - 1]);
+                    System.out.println("   " + tasks.get(taskNum - 1));
+                    System.out.println(line);
+
+                } else if (userCommand.startsWith("delete ")) {
+                    String[] parts = userCommand.split(" ");
+                    if (parts.length < 2) {
+                        throw new RobertException("Please specify which task to delete!");
+                    }
+                    int taskNum = Integer.parseInt(parts[1]);
+                    if (taskNum < 1 || taskNum > tasks.size()) {
+                        throw new RobertException("Task number is out of range!");
+                    }
+
+                    Task removedTask = tasks.remove(taskNum - 1);
+                    System.out.println(" Noted. I've removed this task:");
+                    System.out.println("   " + removedTask);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
 
                 } else if (userCommand.startsWith("todo")) {
@@ -76,11 +92,10 @@ public class Robert {
                     }
 
                     Todo newTodo = new Todo(description);
-                    tasks[taskCount] = newTodo;
-                    taskCount++;
+                    tasks.add(newTodo);
                     System.out.println(" Got it. I've added this task:");
-                    System.out.println("   " + newTodo.toString());
-                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("   " + newTodo);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
 
                 } else if (userCommand.startsWith("deadline")) {
@@ -88,7 +103,6 @@ public class Robert {
                     if (withoutKeyword.isEmpty()) {
                         throw new RobertException("OOPS!!! The description of a deadline cannot be empty.");
                     }
-
                     if (!withoutKeyword.contains("/by")) {
                         throw new RobertException("OOPS!!! A deadline must have '/by <time>'!");
                     }
@@ -108,12 +122,10 @@ public class Robert {
                     }
 
                     Deadline newDeadline = new Deadline(description, by);
-                    tasks[taskCount] = newDeadline;
-                    taskCount++;
-
+                    tasks.add(newDeadline);
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newDeadline);
-                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
 
                 } else if (userCommand.startsWith("event")) {
@@ -121,7 +133,6 @@ public class Robert {
                     if (withoutKeyword.isEmpty()) {
                         throw new RobertException("OOPS!!! The description of an event cannot be empty.");
                     }
-
                     if (!withoutKeyword.contains("/from") || !withoutKeyword.contains("/to")) {
                         throw new RobertException("OOPS!!! An event must have '/from <start>' and '/to <end>'!");
                     }
@@ -132,7 +143,6 @@ public class Robert {
                     }
                     String description = fromSplit[0].trim();
                     String fromAndTo = fromSplit[1].trim();
-
                     String[] toSplit = fromAndTo.split("/to");
                     if (toSplit.length < 2) {
                         throw new RobertException("OOPS!!! Missing '/to' portion for event.");
@@ -148,12 +158,10 @@ public class Robert {
                     }
 
                     Event newEvent = new Event(description, from, to);
-                    tasks[taskCount] = newEvent;
-                    taskCount++;
-
+                    tasks.add(newEvent);
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newEvent);
-                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(line);
 
                 } else if (userCommand.isEmpty()) {
