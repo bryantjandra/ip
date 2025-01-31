@@ -1,0 +1,6 @@
+T|1|read book
+D|0|submit report|2025-01-25
+E|0|project meeting|Monday 2pm|4pm
+T|0|buy groceries
+E|0|team outing|Sunday 10am|1pm
+D|0|renew passport|2025-01-31

@@ -7,7 +7,7 @@ ____________________________________________________________
  Now you have 1 tasks in the list.
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] submit report (by: Friday 5pm)
+   [D][ ] submit report (by: Jan 25 2025)
  Now you have 2 tasks in the list.
 ____________________________________________________________
  Got it. I've added this task:
@@ -16,21 +16,21 @@ ____________________________________________________________
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][ ] read book
- 2.[D][ ] submit report (by: Friday 5pm)
+ 2.[D][ ] submit report (by: Jan 25 2025)
  3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
 ____________________________________________________________
  Nice! I've marked this task as done:
    [T][X] read book
 ____________________________________________________________
  Nice! I've marked this task as done:
-   [D][X] submit report (by: Friday 5pm)
+   [D][X] submit report (by: Jan 25 2025)
 ____________________________________________________________
  OK, I've marked this task as not done yet:
-   [D][ ] submit report (by: Friday 5pm)
+   [D][ ] submit report (by: Jan 25 2025)
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] read book
- 2.[D][ ] submit report (by: Friday 5pm)
+ 2.[D][ ] submit report (by: Jan 25 2025)
  3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
 ____________________________________________________________
  Got it. I've added this task:
@@ -42,16 +42,16 @@ ____________________________________________________________
  Now you have 5 tasks in the list.
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] renew passport (by: next Thursday)
+   [D][ ] renew passport (by: Jan 31 2025)
  Now you have 6 tasks in the list.
 ____________________________________________________________
  Here are the tasks in your list:
  1.[T][X] read book
- 2.[D][ ] submit report (by: Friday 5pm)
+ 2.[D][ ] submit report (by: Jan 25 2025)
  3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
  4.[T][ ] buy groceries
  5.[E][ ] team outing (from: Sunday 10am to: 1pm)
- 6.[D][ ] renew passport (by: next Thursday)
+ 6.[D][ ] renew passport (by: Jan 31 2025)
 ____________________________________________________________
  Bye. Hope to see you again soon!
 ____________________________________________________________
