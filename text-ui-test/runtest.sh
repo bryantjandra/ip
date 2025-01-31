@@ -12,6 +12,11 @@ then
     rm ACTUAL.TXT
 fi
 
+# delete previous data file if it exists
+if [ -f "../data/robert.txt" ]; then
+    rm ../data/robert.txt
+fi
+
 # compile the code into the bin folder, terminates if error occurred
 if ! javac -cp ../src/main/java -Xlint:none -d ../bin ../src/main/java/*.java
 then
