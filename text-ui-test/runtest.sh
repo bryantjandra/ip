@@ -13,7 +13,7 @@ then
 fi
 
 # delete previous data file if it exists
-if [ -f "../data/robert.txt" ]; then
+if [ -f "../data/tasks.txt" ]; then
     rm ../data/robert.txt
 fi
 
