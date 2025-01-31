@@ -7,11 +7,12 @@ public enum CommandType {
     TODO,
     DELETE,
     EVENT,
+    EMPTY,
     UNMARK;
 
     public static CommandType parseCommand(String input) {
-        if (input == null) {
-            return UNKNOWN;
+        if (input == null || input.trim().isEmpty()) {
+            return EMPTY;
         }
         switch (input.toLowerCase()) {
             case "bye":

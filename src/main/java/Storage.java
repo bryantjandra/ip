@@ -1,12 +1,11 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
-    private final String filePath;
+    private String filePath;
 
     public Storage(String filePath) {
         this.filePath = filePath;
@@ -55,11 +54,9 @@ public class Storage {
             if (t instanceof Todo) {
                 fw.write("T|" + (t.isDone ? "1" : "0") + "|" + t.description + System.lineSeparator());
             } else if (t instanceof Deadline d) {
-                fw.write("D|" + (d.isDone ? "1" : "0") + "|" + d.description + "|"
-                        + d.byDate + System.lineSeparator());
+                fw.write("D|" + (d.isDone ? "1" : "0") + "|" + d.description + "|" + d.byDate + System.lineSeparator());
             } else if (t instanceof Event e) {
-                fw.write("E|" + (e.isDone ? "1" : "0") + "|" + e.description + "|"
-                        + e.from + "|" + e.to + System.lineSeparator());
+                fw.write("E|" + (e.isDone ? "1" : "0") + "|" + e.description + "|" + e.from + "|" + e.to + System.lineSeparator());
             }
         }
         fw.close();
