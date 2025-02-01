@@ -1,9 +1,11 @@
+package robert.task;
+
 public class Task {
     protected String description;
     protected boolean isDone;
 
     /**
-     * Constructs a Task with the given description.
+     * Constructs a robert.task.Task with the given description.
      *
      * @param description The description of the task.
      */

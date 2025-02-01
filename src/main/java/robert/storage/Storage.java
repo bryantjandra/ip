@@ -1,3 +1,10 @@
+package robert.storage;
+
+import robert.task.Deadline;
+import robert.task.Event;
+import robert.task.Task;
+import robert.task.Todo;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,11 +59,11 @@ public class Storage {
         FileWriter fw = new FileWriter(filePath);
         for (Task t : tasks) {
             if (t instanceof Todo) {
-                fw.write("T|" + (t.isDone ? "1" : "0") + "|" + t.description + System.lineSeparator());
+                fw.write("T|" + (t.getStatusIcon().equals("X") ? "1" : "0") + "|" + t.getDescription() + System.lineSeparator());
             } else if (t instanceof Deadline d) {
-                fw.write("D|" + (d.isDone ? "1" : "0") + "|" + d.description + "|" + d.byDate + System.lineSeparator());
+                fw.write("D|" + (d.getStatusIcon().equals("X") ? "1" : "0") + "|" + d.getDescription() + "|" + d.getByDate() + System.lineSeparator());
             } else if (t instanceof Event e) {
-                fw.write("E|" + (e.isDone ? "1" : "0") + "|" + e.description + "|" + e.from + "|" + e.to + System.lineSeparator());
+                fw.write("E|" + (e.getStatusIcon().equals("X") ? "1" : "0") + "|" + e.getDescription() + "|" + e.getFrom() + "|" + e.getTo() + System.lineSeparator());
             }
         }
         fw.close();

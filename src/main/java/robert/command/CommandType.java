@@ -1,3 +1,5 @@
+package robert.command;
+
 public enum CommandType {
     LIST,
     BYE,

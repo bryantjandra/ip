@@ -1,12 +1,14 @@
+package robert.task;
+
 /**
- * Represents a task without any date/time attached (a simple Todo).
+ * Represents a task without any date/time attached (a simple robert.task.Todo).
  */
 public class Todo extends Task {
 
     /**
-     * Constructs a Todo with the specified description.
+     * Constructs a robert.task.Todo with the specified description.
      *
-     * @param description The description of the Todo task.
+     * @param description The description of the robert.task.Todo task.
      */
     public Todo(String description) {
         super(description);

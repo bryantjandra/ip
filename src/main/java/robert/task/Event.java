@@ -1,3 +1,5 @@
+package robert.task;
+
 /**
  * Represents a task that starts at a specific time and ends at a specific time.
  */
@@ -7,7 +9,7 @@ public class Event extends Task {
     protected String to;
 
     /**
-     * Constructs an Event with a description, a start time, and an end time.
+     * Constructs an robert.task.Event with a description, a start time, and an end time.
      *
      * @param description The event's description.
      * @param from        The start time.
@@ -18,6 +20,15 @@ public class Event extends Task {
         this.from = from;
         this.to = to;
     }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
 
     /**
      * Returns the string representation of the event. This includes the
