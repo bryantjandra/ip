@@ -1,11 +1,14 @@
 package robert.task;
 
+/**
+ * Represents a single task with a description and a done-status.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
 
     /**
-     * Constructs a robert.task.Task with the given description.
+     * Constructs a Task with the given description.
      *
      * @param description The description of the task.
      */
