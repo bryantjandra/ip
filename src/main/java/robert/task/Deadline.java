@@ -1,3 +1,5 @@
+package robert.task;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -10,7 +12,7 @@ public class Deadline extends Task {
     protected LocalDate byDate;
 
     /**
-     * Constructs a Deadline task with a description and a 'by' date.
+     * Constructs a robert.task.Deadline task with a description and a 'by' date.
      *
      * @param description The task description.
      * @param by          The deadline date (as a string).
@@ -20,6 +22,11 @@ public class Deadline extends Task {
         super(description);
         this.byDate = LocalDate.parse(by);
     }
+
+    public LocalDate getByDate() {
+        return byDate;
+    }
+
 
     /**
      * Returns the string representation of the deadline. This includes

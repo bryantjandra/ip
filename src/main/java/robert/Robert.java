@@ -1,3 +1,11 @@
+package robert;
+
+import robert.command.CommandType;
+import robert.parser.Parser;
+import robert.storage.Storage;
+import robert.task.*;
+import robert.ui.Ui;
+
 import java.io.IOException;
 
 public class Robert {
@@ -139,7 +147,7 @@ public class Robert {
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("robert.task.Task number is out of range!");
         }
         tasks.get(taskNum - 1).markAsDone();
         storage.save(tasks.getTasks());
@@ -153,7 +161,7 @@ public class Robert {
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("robert.task.Task number is out of range!");
         }
         tasks.get(taskNum - 1).markAsNotDone();
         storage.save(tasks.getTasks());
@@ -167,7 +175,7 @@ public class Robert {
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("robert.task.Task number is out of range!");
         }
         Task removedTask = tasks.remove(taskNum - 1);
         storage.save(tasks.getTasks());

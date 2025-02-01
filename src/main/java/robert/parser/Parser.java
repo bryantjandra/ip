@@ -1,3 +1,6 @@
+package robert.parser;
+import robert.command.CommandType;
+
 public class Parser {
     public static CommandType parse(String fullCommand) {
         if (fullCommand.trim().isEmpty()) {
