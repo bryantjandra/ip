@@ -13,6 +13,7 @@ public enum CommandType {
     DELETE,
     EVENT,
     EMPTY,
+    FIND,
     UNMARK;
 
     /**
@@ -42,6 +43,8 @@ public enum CommandType {
             return DEADLINE;
         case "event":
             return EVENT;
+        case "find":
+            return FIND;
         default:
             return UNKNOWN;
         }

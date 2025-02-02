@@ -1,6 +1,7 @@
 package robert;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import robert.command.CommandType;
 import robert.parser.Parser;
@@ -49,43 +50,56 @@ public class Robert {
                 CommandType commandWord = Parser.parse(fullCommand);
                 switch (commandWord) {
                 case BYE:
-                    ui.showError(" Bye. Hope to see you again soon!");
+                    ui.showMessage(" Bye. Hope to see you again soon!");
                     ui.showLine();
                     isExit = true;
                     break;
+
                 case LIST:
-                    ui.showError(" Here are the tasks in your list:");
+                    ui.showMessage(" Here are the tasks in your list:");
                     for (int i = 0; i < tasks.size(); i++) {
-                        ui.showError(" " + (i + 1) + "." + tasks.get(i));
+                        ui.showMessage(" " + (i + 1) + "." + tasks.get(i));
                     }
                     break;
+
                 case TODO:
                     handleTodo(fullCommand.substring("todo".length()).trim());
                     break;
+
                 case DEADLINE:
                     handleDeadline(fullCommand.substring("deadline".length()).trim());
                     break;
+
                 case EVENT:
                     handleEvent(fullCommand.substring("event".length()).trim());
                     break;
+
                 case MARK:
                     handleMark(fullCommand.substring("mark".length()).trim());
                     break;
+
                 case UNMARK:
                     handleUnmark(fullCommand.substring("unmark".length()).trim());
                     break;
+
                 case DELETE:
                     handleDelete(fullCommand.substring("delete".length()).trim());
                     break;
+
+                case FIND:
+                    handleFind(fullCommand.substring("find".length()).trim());
+                    break;
+
                 case EMPTY:
                     throw new RobertException("OOPS!!! You typed an empty command!");
+
                 default:
                     throw new RobertException("OOPS!!! What do you mean by that?");
                 }
             } catch (RobertException e) {
-                ui.showError(e.getMessage());
+                ui.showMessage(e.getMessage());
             } catch (IOException e) {
-                ui.showError("OOPS!!! Unable to save tasks!");
+                ui.showMessage("OOPS!!! Unable to save tasks!");
             }
         }
     }
@@ -104,9 +118,9 @@ public class Robert {
         Todo t = new Todo(description);
         tasks.add(t);
         storage.save(tasks.getTasks());
-        ui.showError(" Got it. I've added this task:");
-        ui.showError("   " + t);
-        ui.showError(" Now you have " + tasks.size() + " tasks in the list.");
+        ui.showMessage(" Got it. I've added this task:");
+        ui.showMessage("   " + t);
+        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
@@ -137,9 +151,9 @@ public class Robert {
         Deadline d = new Deadline(description, by);
         tasks.add(d);
         storage.save(tasks.getTasks());
-        ui.showError(" Got it. I've added this task:");
-        ui.showError("   " + d);
-        ui.showError(" Now you have " + tasks.size() + " tasks in the list.");
+        ui.showMessage(" Got it. I've added this task:");
+        ui.showMessage("   " + d);
+        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
@@ -160,25 +174,25 @@ public class Robert {
             throw new RobertException("OOPS!!! Missing '/from' portion for event.");
         }
         String description = fromSplit[0].trim();
-        String fromAndTo = fromSplit[1].trim();
-        String[] toSplit = fromAndTo.split("/to");
+        String startAndEnd = fromSplit[1].trim();
+        String[] toSplit = startAndEnd.split("/to");
         if (toSplit.length < 2) {
             throw new RobertException("OOPS!!! Missing '/to' portion for event.");
         }
-        String from = toSplit[0].trim();
-        String to = toSplit[1].trim();
+        String startTime = toSplit[0].trim();
+        String endTime = toSplit[1].trim();
         if (description.isEmpty()) {
             throw new RobertException("OOPS!!! The description of an event cannot be empty.");
         }
-        if (from.isEmpty() || to.isEmpty()) {
+        if (startTime.isEmpty() || endTime.isEmpty()) {
             throw new RobertException("OOPS!!! The start and end times for an event cannot be empty.");
         }
-        Event e = new Event(description, from, to);
+        Event e = new Event(description, startTime, endTime);
         tasks.add(e);
         storage.save(tasks.getTasks());
-        ui.showError(" Got it. I've added this task:");
-        ui.showError("   " + e);
-        ui.showError(" Now you have " + tasks.size() + " tasks in the list.");
+        ui.showMessage(" Got it. I've added this task:");
+        ui.showMessage("   " + e);
+        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /**
@@ -198,8 +212,8 @@ public class Robert {
         }
         tasks.get(taskNum - 1).markAsDone();
         storage.save(tasks.getTasks());
-        ui.showError(" Nice! I've marked this task as done:");
-        ui.showError("   " + tasks.get(taskNum - 1));
+        ui.showMessage(" Nice! I've marked this task as done:");
+        ui.showMessage("   " + tasks.get(taskNum - 1));
     }
 
     /**
@@ -219,8 +233,8 @@ public class Robert {
         }
         tasks.get(taskNum - 1).markAsNotDone();
         storage.save(tasks.getTasks());
-        ui.showError(" OK, I've marked this task as not done yet:");
-        ui.showError("   " + tasks.get(taskNum - 1));
+        ui.showMessage(" OK, I've marked this task as not done yet:");
+        ui.showMessage("   " + tasks.get(taskNum - 1));
     }
 
     /**
@@ -240,9 +254,38 @@ public class Robert {
         }
         Task removedTask = tasks.remove(taskNum - 1);
         storage.save(tasks.getTasks());
-        ui.showError(" Noted. I've removed this task:");
-        ui.showError("   " + removedTask);
-        ui.showError(" Now you have " + tasks.size() + " tasks in the list.");
+        ui.showMessage(" Noted. I've removed this task:");
+        ui.showMessage("   " + removedTask);
+        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
+    }
+
+    /**
+     * Handles finding tasks whose description matches a given keyword.
+     *
+     * @param keyword The search keyword.
+     * @throws RobertException If the keyword is empty.
+     */
+    private void handleFind(String keyword) throws RobertException {
+        if (keyword.isEmpty()) {
+            throw new RobertException("OOPS!!! The find command requires a keyword!");
+        }
+
+        ArrayList<Task> matchedTasks = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task current = tasks.get(i);
+            if (current.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                matchedTasks.add(current);
+            }
+        }
+
+        if (matchedTasks.isEmpty()) {
+            ui.showMessage(" No tasks matched your search: " + keyword);
+        } else {
+            ui.showMessage(" Here are the matching tasks in your list:");
+            for (int i = 0; i < matchedTasks.size(); i++) {
+                ui.showMessage(" " + (i + 1) + "." + matchedTasks.get(i));
+            }
+        }
     }
 
     /**

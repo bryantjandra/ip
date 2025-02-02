@@ -52,7 +52,7 @@ public class Ui {
      *
      * @param msg The message to be printed.
      */
-    public void showError(String msg) {
+    public void showMessage(String msg) {
         System.out.println(msg);
     }
 }
