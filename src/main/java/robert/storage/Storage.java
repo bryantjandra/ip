@@ -100,9 +100,9 @@ public class Storage {
                         + "|"
                         + e.getDescription()
                         + "|"
-                        + e.getFrom()
+                        + e.getStartTime()
                         + "|"
-                        + e.getTo()
+                        + e.getEndTime()
                         + System.lineSeparator());
             }
         }

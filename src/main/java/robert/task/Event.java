@@ -5,28 +5,28 @@ package robert.task;
  */
 public class Event extends Task {
 
-    protected String from;
-    protected String to;
+    protected String startTime;
+    protected String endTime;
 
     /**
      * Constructs a robert.task.Event with a description, a start time, and an end time.
      *
      * @param description The event's description.
-     * @param from        The start time.
-     * @param to          The end time.
+     * @param startTime        The start time.
+     * @param endTime          The end time.
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, String startTime, String endTime) {
         super(description);
-        this.from = from;
-        this.to = to;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public String getFrom() {
-        return from;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public String getTo() {
-        return to;
+    public String getEndTime() {
+        return endTime;
     }
 
 
@@ -38,6 +38,6 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return "[E]" + super.toString() + " (from: " + startTime + " to: " + endTime + ")";
     }
 }
