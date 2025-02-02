@@ -30,9 +30,9 @@ public class Deadline extends Task {
 
     /**
      * Returns the string representation of the deadline. This includes
-     * the status, description, and deadline date formatted as "MMM d yyyy".
+     * the status, description, and deadline date formatted as "MMM dd yyyy".
      *
-     * @return The string representation of the deadline in the format: [D][status] description (by: MMM d yyyy)
+     * @return The string representation of the deadline in the format: [D][status] description (by: MMM dd yyyy)
      */
     @Override
     public String toString() {

@@ -9,7 +9,7 @@ public class Ui {
     private final Scanner sc;
 
     /**
-     * Creates a Ui object for interacting with the user.
+     * Creates an Ui object for interacting with the user.
      */
     public Ui() {
         this.sc = new Scanner(System.in);
