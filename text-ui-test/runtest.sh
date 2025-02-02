@@ -13,8 +13,8 @@ then
 fi
 
 # delete previous data file if it exists
-if [ -f "../data/tasks.txt" ]; then
-    rm ../data/tasks.txt
+if [ -f "./data/tasks.txt" ]; then
+    rm ./data/tasks.txt
 fi
 
 # compile the code into the bin folder, recursively including all Java files
