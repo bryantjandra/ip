@@ -160,20 +160,20 @@ public class Robert {
             throw new RobertException("OOPS!!! Missing '/from' portion for event.");
         }
         String description = fromSplit[0].trim();
-        String fromAndTo = fromSplit[1].trim();
-        String[] toSplit = fromAndTo.split("/to");
+        String startAndEnd = fromSplit[1].trim();
+        String[] toSplit = startAndEnd.split("/to");
         if (toSplit.length < 2) {
             throw new RobertException("OOPS!!! Missing '/to' portion for event.");
         }
-        String from = toSplit[0].trim();
-        String to = toSplit[1].trim();
+        String startTime = toSplit[0].trim();
+        String endTime = toSplit[1].trim();
         if (description.isEmpty()) {
             throw new RobertException("OOPS!!! The description of an event cannot be empty.");
         }
-        if (from.isEmpty() || to.isEmpty()) {
+        if (startTime.isEmpty() || endTime.isEmpty()) {
             throw new RobertException("OOPS!!! The start and end times for an event cannot be empty.");
         }
-        Event e = new Event(description, from, to);
+        Event e = new Event(description, startTime, endTime);
         tasks.add(e);
         storage.save(tasks.getTasks());
         ui.showError(" Got it. I've added this task:");
