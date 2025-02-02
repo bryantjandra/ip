@@ -9,7 +9,7 @@ public class Event extends Task {
     protected String to;
 
     /**
-     * Constructs an robert.task.Event with a description, a start time, and an end time.
+     * Constructs a robert.task.Event with a description, a start time, and an end time.
      *
      * @param description The event's description.
      * @param from        The start time.
