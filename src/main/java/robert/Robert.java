@@ -11,134 +11,146 @@ import robert.task.Event;
 import robert.task.Task;
 import robert.task.TaskList;
 import robert.task.Todo;
-import robert.ui.Ui;
 
 /**
- * Main class of the Robert chatbot application.
+ * Main class of the Robert chatbot application, refactored to remove all console prints.
+ * Instead, methods return strings that the GUI can display.
  */
 public class Robert {
     private Storage storage;
     private TaskList tasks;
-    private Ui ui;
 
     /**
      * Creates a Robert chatbot with the specified file path for data storage.
+     * Loads tasks from file. If loading fails, an empty TaskList is used.
      *
      * @param filePath The path to the file where tasks will be saved/loaded.
      */
     public Robert(String filePath) {
-        ui = new Ui();
         storage = new Storage(filePath);
         try {
             tasks = new TaskList(storage.load());
         } catch (IOException e) {
-            ui.showLoadingError();
+            // If loading fails, just start with an empty TaskList
             tasks = new TaskList();
         }
     }
 
     /**
-     * Runs the Robert chatbot until the user issues the bye command.
+     * Returns the "welcome" message that was previously printed on startup.
+     * Use this immediately in the GUI (e.g., after creating the Robert object)
+     * so that the user sees the greeting without typing anything.
+     *
+     * @return The multiline welcome message as a String.
      */
-    public void run() {
-        ui.showWelcome();
-        boolean isExit = false;
-        while (!isExit) {
-            String fullCommand = ui.readCommand();
-            ui.showLine();
-            try {
-                CommandType commandWord = Parser.parse(fullCommand);
-                switch (commandWord) {
-                case BYE:
-                    ui.showMessage(" Bye. Hope to see you again soon!");
-                    ui.showLine();
-                    isExit = true;
-                    break;
-
-                case LIST:
-                    ui.showMessage(" Here are the tasks in your list:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        ui.showMessage(" " + (i + 1) + "." + tasks.get(i));
-                    }
-                    break;
-
-                case TODO:
-                    handleTodo(fullCommand.substring("todo".length()).trim());
-                    break;
-
-                case DEADLINE:
-                    handleDeadline(fullCommand.substring("deadline".length()).trim());
-                    break;
-
-                case EVENT:
-                    handleEvent(fullCommand.substring("event".length()).trim());
-                    break;
-
-                case MARK:
-                    handleMark(fullCommand.substring("mark".length()).trim());
-                    break;
-
-                case UNMARK:
-                    handleUnmark(fullCommand.substring("unmark".length()).trim());
-                    break;
-
-                case DELETE:
-                    handleDelete(fullCommand.substring("delete".length()).trim());
-                    break;
-
-                case FIND:
-                    handleFind(fullCommand.substring("find".length()).trim());
-                    break;
-
-                case EMPTY:
-                    throw new RobertException("OOPS!!! You typed an empty command!");
-
-                default:
-                    throw new RobertException("OOPS!!! What do you mean by that?");
-                }
-            } catch (RobertException e) {
-                ui.showMessage(e.getMessage());
-            } catch (IOException e) {
-                ui.showMessage("OOPS!!! Unable to save tasks!");
-            }
-        }
+    public String getStartupMessage() {
+        // No divider line, as requested
+        return " Hello! I'm Robert\n What can I do for you?";
     }
 
     /**
-     * Handles the creation of a Todo task.
+     * Takes a user input string, parses it, executes the command, and returns
+     * the exact text that was previously printed to the console.
      *
-     * @param description Description of the Todo.
-     * @throws RobertException If the description is empty.
-     * @throws IOException     If saving the data fails.
+     * @param input Full user input string (e.g., "todo read book").
+     * @return The response lines that should be displayed in the GUI.
      */
-    private void handleTodo(String description) throws RobertException, IOException {
+    public String getResponse(String input) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            CommandType commandWord = Parser.parse(input);
+            switch (commandWord) {
+            case BYE:
+                sb.append(" Bye. Hope to see you again soon!");
+                break;
+
+            case LIST:
+                sb.append(" Here are the tasks in your list:\n");
+                for (int i = 0; i < tasks.size(); i++) {
+                    sb.append(" ").append(i + 1).append(".").append(tasks.get(i)).append("\n");
+                }
+                break;
+
+            case TODO:
+                sb.append(handleTodo(input.substring("todo".length()).trim()));
+                break;
+
+            case DEADLINE:
+                sb.append(handleDeadline(input.substring("deadline".length()).trim()));
+                break;
+
+            case EVENT:
+                sb.append(handleEvent(input.substring("event".length()).trim()));
+                break;
+
+            case MARK:
+                sb.append(handleMark(input.substring("mark".length()).trim()));
+                break;
+
+            case UNMARK:
+                sb.append(handleUnmark(input.substring("unmark".length()).trim()));
+                break;
+
+            case DELETE:
+                sb.append(handleDelete(input.substring("delete".length()).trim()));
+                break;
+
+            case FIND:
+                sb.append(handleFind(input.substring("find".length()).trim()));
+                break;
+
+            case EMPTY:
+                throw new RobertException("OOPS!!! You typed an empty command!");
+
+            default:
+                throw new RobertException("OOPS!!! What do you mean by that?");
+            }
+        } catch (RobertException e) {
+            sb.append(e.getMessage());
+        } catch (IOException e) {
+            sb.append("OOPS!!! Unable to save tasks!");
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * Creates and adds a new {@code Todo} task, then returns the textual response.
+     *
+     * @param description The description of the ToDo task (must not be empty).
+     * @return A string containing the lines that would have been printed previously.
+     * @throws RobertException If the description is empty.
+     * @throws IOException     If saving tasks fails.
+     */
+    private String handleTodo(String description) throws RobertException, IOException {
         if (description.isEmpty()) {
             throw new RobertException("OOPS!!! The description of a todo should not be empty.");
         }
         Todo t = new Todo(description);
         tasks.add(t);
         storage.save(tasks.getTasks());
-        ui.showMessage(" Got it. I've added this task:");
-        ui.showMessage("   " + t);
-        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Got it. I've added this task:\n");
+        sb.append("   ").append(t).append("\n");
+        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        return sb.toString();
     }
 
     /**
-     * Handles the creation of a Deadline task.
+     * Creates and adds a new {@code Deadline} task, then returns the textual response.
      *
-     * @param desc A string containing the description and date after '/by'.
-     * @throws RobertException If format is invalid or fields are empty.
-     * @throws IOException     If saving the data fails.
+     * @param desc The raw input after the "deadline" keyword, e.g., "return book /by 2025-01-01".
+     * @return A string containing the lines that would have been printed previously.
+     * @throws RobertException If the format is invalid or fields are empty.
+     * @throws IOException     If saving tasks fails.
      */
-    private void handleDeadline(String desc) throws RobertException, IOException {
+    private String handleDeadline(String desc) throws RobertException, IOException {
         if (!desc.contains("/by")) {
             throw new RobertException("OOPS!!! A deadline must have '/by <time>'!");
         }
         String[] parts = desc.split("/by");
         if (parts.length < 2) {
-            throw new RobertException(
-                    "OOPS!!! A deadline must have a description and a time after '/by'."
-            );
+            throw new RobertException("OOPS!!! A deadline must have a description and a time after '/by'.");
         }
         String description = parts[0].trim();
         String by = parts[1].trim();
@@ -151,23 +163,25 @@ public class Robert {
         Deadline d = new Deadline(description, by);
         tasks.add(d);
         storage.save(tasks.getTasks());
-        ui.showMessage(" Got it. I've added this task:");
-        ui.showMessage("   " + d);
-        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Got it. I've added this task:\n");
+        sb.append("   ").append(d).append("\n");
+        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        return sb.toString();
     }
 
     /**
-     * Handles the creation of an Event task.
+     * Creates and adds a new {@code Event} task, then returns the textual response.
      *
-     * @param desc A string containing the description and times after '/from' and '/to'.
+     * @param desc The raw input after the "event" keyword, e.g., "some event /from 2025-01-01 /to 2025-01-02".
+     * @return A string containing the lines that would have been printed previously.
      * @throws RobertException If format is invalid or fields are empty.
-     * @throws IOException     If saving the data fails.
+     * @throws IOException     If saving tasks fails.
      */
-    private void handleEvent(String desc) throws RobertException, IOException {
+    private String handleEvent(String desc) throws RobertException, IOException {
         if (!desc.contains("/from") || !desc.contains("/to")) {
-            throw new RobertException(
-                    "OOPS!!! An event must have '/from <start>' and '/to <end>'!"
-            );
+            throw new RobertException("OOPS!!! An event must have '/from <start>' and '/to <end>'!");
         }
         String[] fromSplit = desc.split("/from");
         if (fromSplit.length < 2) {
@@ -190,19 +204,23 @@ public class Robert {
         Event e = new Event(description, startTime, endTime);
         tasks.add(e);
         storage.save(tasks.getTasks());
-        ui.showMessage(" Got it. I've added this task:");
-        ui.showMessage("   " + e);
-        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Got it. I've added this task:\n");
+        sb.append("   ").append(e).append("\n");
+        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        return sb.toString();
     }
 
     /**
-     * Handles marking a task as done.
+     * Marks a task as done.
      *
-     * @param arg The string representing the task number to mark.
-     * @throws IOException     If saving the data fails.
-     * @throws RobertException If the task number is invalid.
+     * @param arg A string representing the task number to mark, e.g., "2".
+     * @return A string response containing the lines that would have been printed.
+     * @throws IOException     If saving tasks fails.
+     * @throws RobertException If the task number is invalid or out of range.
      */
-    private void handleMark(String arg) throws IOException, RobertException {
+    private String handleMark(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
             throw new RobertException("Please specify which task to mark!");
         }
@@ -212,18 +230,22 @@ public class Robert {
         }
         tasks.get(taskNum - 1).markAsDone();
         storage.save(tasks.getTasks());
-        ui.showMessage(" Nice! I've marked this task as done:");
-        ui.showMessage("   " + tasks.get(taskNum - 1));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Nice! I've marked this task as done:\n");
+        sb.append("   ").append(tasks.get(taskNum - 1));
+        return sb.toString();
     }
 
     /**
-     * Handles unmarking a task as not done.
+     * Unmarks a task (marks as not done).
      *
-     * @param arg The string representing the task number to unmark.
-     * @throws IOException     If saving the data fails.
-     * @throws RobertException If the task number is invalid.
+     * @param arg A string representing the task number to unmark, e.g., "2".
+     * @return A string response containing the lines that would have been printed.
+     * @throws IOException     If saving tasks fails.
+     * @throws RobertException If the task number is invalid or out of range.
      */
-    private void handleUnmark(String arg) throws IOException, RobertException {
+    private String handleUnmark(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
             throw new RobertException("Please specify which task to unmark!");
         }
@@ -233,18 +255,22 @@ public class Robert {
         }
         tasks.get(taskNum - 1).markAsNotDone();
         storage.save(tasks.getTasks());
-        ui.showMessage(" OK, I've marked this task as not done yet:");
-        ui.showMessage("   " + tasks.get(taskNum - 1));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" OK, I've marked this task as not done yet:\n");
+        sb.append("   ").append(tasks.get(taskNum - 1));
+        return sb.toString();
     }
 
     /**
-     * Handles deleting a task from the list.
+     * Deletes a task from the task list.
      *
-     * @param arg The string representing the task number to delete.
-     * @throws IOException     If saving the data fails.
-     * @throws RobertException If the task number is invalid.
+     * @param arg A string representing the task number to delete.
+     * @return A string response containing the lines that would have been printed.
+     * @throws IOException     If saving tasks fails.
+     * @throws RobertException If the task number is invalid or out of range.
      */
-    private void handleDelete(String arg) throws IOException, RobertException {
+    private String handleDelete(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
             throw new RobertException("Please specify which task to delete!");
         }
@@ -254,22 +280,25 @@ public class Robert {
         }
         Task removedTask = tasks.remove(taskNum - 1);
         storage.save(tasks.getTasks());
-        ui.showMessage(" Noted. I've removed this task:");
-        ui.showMessage("   " + removedTask);
-        ui.showMessage(" Now you have " + tasks.size() + " tasks in the list.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" Noted. I've removed this task:\n");
+        sb.append("   ").append(removedTask).append("\n");
+        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        return sb.toString();
     }
 
     /**
-     * Handles finding tasks whose description matches a given keyword.
+     * Finds tasks whose description matches the given keyword.
      *
      * @param keyword The search keyword.
+     * @return A string listing the matching tasks, or indicating none found.
      * @throws RobertException If the keyword is empty.
      */
-    private void handleFind(String keyword) throws RobertException {
+    private String handleFind(String keyword) throws RobertException {
         if (keyword.isEmpty()) {
             throw new RobertException("OOPS!!! The find command requires a keyword!");
         }
-
         ArrayList<Task> matchedTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
             Task current = tasks.get(i);
@@ -279,21 +308,13 @@ public class Robert {
         }
 
         if (matchedTasks.isEmpty()) {
-            ui.showMessage(" No tasks matched your search: " + keyword);
+            return " No tasks matched your search: " + keyword;
         } else {
-            ui.showMessage(" Here are the matching tasks in your list:");
+            StringBuilder sb = new StringBuilder(" Here are the matching tasks in your list:\n");
             for (int i = 0; i < matchedTasks.size(); i++) {
-                ui.showMessage(" " + (i + 1) + "." + matchedTasks.get(i));
+                sb.append(" ").append(i + 1).append(".").append(matchedTasks.get(i)).append("\n");
             }
+            return sb.toString();
         }
-    }
-
-    /**
-     * The main entry point. Creates a new Robert instance and runs it.
-     *
-     * @param args Command-line arguments (not used).
-     */
-    public static void main(String[] args) {
-        new Robert("data/tasks.txt").run();
     }
 }
