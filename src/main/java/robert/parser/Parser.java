@@ -13,6 +13,7 @@ public class Parser {
      * @return A CommandType enum representing the command.
      */
     public static CommandType parse(String fullCommand) {
+        assert fullCommand != null : "Parser.parse(...) received null fullCommand";
         if (fullCommand.trim().isEmpty()) {
             return CommandType.UNKNOWN;
         }

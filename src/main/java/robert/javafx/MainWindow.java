@@ -38,8 +38,8 @@ public class MainWindow {
      * @param r The Robert chatbot instance.
      */
     public void setRobert(Robert r) {
+        assert r != null : "Robert instance cannot be null for MainWindow";
         this.robert = r;
-        // Show the welcome text right away
         String startup = robert.getStartupMessage();
         dialogContainer.getChildren().add(
                 DialogBox.getRobertDialog(startup, robertImage)
