@@ -20,6 +20,8 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) throws DateTimeParseException {
         super(description);
+        assert description != null : "Deadline description cannot be null";
+        assert by != null : "Deadline 'by' date string cannot be null";
         this.byDate = LocalDate.parse(by);
     }
 

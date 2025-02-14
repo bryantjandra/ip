@@ -27,6 +27,8 @@ public class DialogBox extends HBox {
      * Creates a DialogBox with the specified text and image.
      */
     private DialogBox(String text, Image img) {
+        assert text != null : "DialogBox text cannot be null";
+        assert img != null : "DialogBox image cannot be null";
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);

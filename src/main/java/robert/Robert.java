@@ -27,6 +27,7 @@ public class Robert {
      * @param filePath The path to the file where tasks will be saved/loaded.
      */
     public Robert(String filePath) {
+        assert filePath != null : "Robert constructor must have a non-null file path";
         storage = new Storage(filePath);
         try {
             tasks = new TaskList(storage.load());
