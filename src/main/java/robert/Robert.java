@@ -37,8 +37,8 @@ public class Robert {
     }
 
     /**
-     * Returns a "welcome message"
-     * Uses this immediately in the GUI (e.g., after creating the Robert object)
+     * Returns a "welcome message" and uses this immediately in the
+     * GUI (e.g., after creating the Robert object)
      * so that the user sees the greeting without typing anything.
      *
      * @return The multiline welcome message as a String.
