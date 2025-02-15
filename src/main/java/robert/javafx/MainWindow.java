@@ -54,10 +54,13 @@ public class MainWindow {
         String input = userInput.getText();
         String response = robert.getResponse(input);
 
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getRobertDialog(response, robertImage)
-        );
+        dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
+
+        if (response.startsWith("OOPS!!!") || response.startsWith("OOPS")) {
+            dialogContainer.getChildren().add(DialogBox.getErrorDialog(response, robertImage));
+        } else {
+            dialogContainer.getChildren().add(DialogBox.getRobertDialog(response, robertImage));
+        }
 
         userInput.clear();
     }
