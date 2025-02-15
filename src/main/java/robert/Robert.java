@@ -14,11 +14,10 @@ import robert.task.TaskList;
 import robert.task.Todo;
 
 /**
- * Main class of the Robert chatbot application, refactored to remove all console prints.
- * Instead, methods return strings that the GUI can display.
+ * Main class of the Robert chatbot application.
  */
 public class Robert {
-    private Storage storage;
+    private final Storage storage;
     private TaskList tasks;
 
     /**
@@ -38,8 +37,8 @@ public class Robert {
     }
 
     /**
-     * Returns the "welcome" message that was previously printed on startup.
-     * Use this immediately in the GUI (e.g., after creating the Robert object)
+     * Returns a "welcome message"
+     * Uses this immediately in the GUI (e.g., after creating the Robert object)
      * so that the user sees the greeting without typing anything.
      *
      * @return The multiline welcome message as a String.
@@ -51,7 +50,7 @@ public class Robert {
 
     /**
      * Takes a user input string, parses it, executes the command, and returns
-     * the exact text that was previously printed to the console.
+     * a specified response depending on the command word.
      *
      * @param input Full user input string (e.g., "todo read book").
      * @return The response lines that should be displayed in the GUI.
@@ -111,10 +110,8 @@ public class Robert {
                 throw new RobertException("Pardon me, sir. I am afraid I did not understand that command.");
             }
         } catch (RobertException e) {
-            // This typically means user did something invalid
             sb.append(e.getMessage());
         } catch (IOException e) {
-            // This typically means we failed saving/loading
             sb.append("My apologies, sir. I'm unable to save tasks at the moment!");
         }
         return sb.toString().trim();

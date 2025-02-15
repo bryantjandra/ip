@@ -129,7 +129,6 @@ public class Storage {
             Event e = (Event) t;
             return "E|" + doneFlag + "|" + e.getDescription() + "|" + e.getStartTime() + "|" + e.getEndTime();
         } else {
-            // Ideally shouldn't happen if we only have Todo, Deadline, Event
             return "";
         }
     }
