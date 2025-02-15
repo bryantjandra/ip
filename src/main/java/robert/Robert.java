@@ -102,7 +102,9 @@ public class Robert {
 
             case EMPTY:
                 throw new RobertException("OOPS!!! You typed an empty command!");
-
+            case SORT:
+                sb.append(handleSort());
+                break;
             default:
                 throw new RobertException("OOPS!!! What do you mean by that?");
             }
@@ -317,5 +319,43 @@ public class Robert {
             }
             return sb.toString();
         }
+    }
+    /**
+     * Sorts all Deadlines by ascending date, placing them first in the list,
+     * followed by all other tasks in their current order.
+     *
+     * @return A string response indicating the new order of tasks.
+     * @throws IOException If saving tasks fails.
+     */
+    private String handleSort() throws IOException {
+        ArrayList<Task> deadlines = new ArrayList<>();
+        ArrayList<Task> others = new ArrayList<>();
+
+        for (Task t : tasks.getTasks()) {
+            if (t instanceof Deadline) {
+                deadlines.add(t);
+            } else {
+                others.add(t);
+            }
+        }
+
+        deadlines.sort((a, b) -> {
+            Deadline da = (Deadline) a;
+            Deadline db = (Deadline) b;
+            return da.getByDate().compareTo(db.getByDate());
+        });
+
+        tasks.getTasks().clear();
+        tasks.getTasks().addAll(deadlines);
+        tasks.getTasks().addAll(others);
+
+        storage.save(tasks.getTasks());
+
+        StringBuilder sb = new StringBuilder(" Deadlines have been sorted by date!\n");
+        sb.append(" Here is your new list:\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(" ").append(i + 1).append(".").append(tasks.get(i)).append("\n");
+        }
+        return sb.toString();
     }
 }
