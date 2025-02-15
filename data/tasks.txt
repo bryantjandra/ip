@@ -6,3 +6,6 @@ T|1|buy chess
 E|0|project meeting|Monday 2pm|4pm
 T|0|buy book
 T|0|buy book
+D|0|submit report|2025-01-25
+E|0|project meeting|Monday 2pm|4pm
+D|0|submit report|2025-01-25

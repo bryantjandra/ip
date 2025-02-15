@@ -1,6 +1,7 @@
 package robert;
 
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import robert.command.CommandType;
@@ -166,7 +167,16 @@ public class Robert {
         if (by.isEmpty()) {
             throw new RobertException("The time of a deadline cannot be empty.");
         }
-        Deadline d = new Deadline(description, by);
+
+        Deadline d;
+        try {
+            d = new Deadline(description, by);
+        } catch (DateTimeParseException e) {
+            throw new RobertException(
+                    "Sir, the specified deadline date is invalid. Please use the format yyyy-mm-dd."
+            );
+        }
+
         tasks.add(d);
         storage.save(tasks.getTasks());
 
@@ -176,6 +186,7 @@ public class Robert {
         sb.append("You now have ").append(tasks.size()).append(" tasks in your list, sir.");
         return sb.toString();
     }
+
 
     /**
      * Creates and adds a new {@code Event} task, then returns the textual response.
@@ -230,7 +241,14 @@ public class Robert {
         if (arg.isEmpty()) {
             throw new RobertException("Please specify which task to mark.");
         }
-        int taskNum = Integer.parseInt(arg);
+
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(arg);
+        } catch (NumberFormatException e) {
+            throw new RobertException("Sir, '" + arg + "' is not a valid task number.");
+        }
+
         if (taskNum < 1 || taskNum > tasks.size()) {
             throw new RobertException("That task number is out of range, sir.");
         }
@@ -255,7 +273,14 @@ public class Robert {
         if (arg.isEmpty()) {
             throw new RobertException("Please specify which task to unmark.");
         }
-        int taskNum = Integer.parseInt(arg);
+
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(arg);
+        } catch (NumberFormatException e) {
+            throw new RobertException("Sir, '" + arg + "' is not a valid task number.");
+        }
+
         if (taskNum < 1 || taskNum > tasks.size()) {
             throw new RobertException("That task number is out of range, sir.");
         }
