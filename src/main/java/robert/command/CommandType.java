@@ -14,7 +14,8 @@ public enum CommandType {
     EVENT,
     EMPTY,
     FIND,
-    UNMARK;
+    UNMARK,
+    SORT;
 
     /**
      * Parses the given input string and returns the matching CommandType.
@@ -45,6 +46,8 @@ public enum CommandType {
             return EVENT;
         case "find":
             return FIND;
+        case "sort":
+            return SORT;
         default:
             return UNKNOWN;
         }

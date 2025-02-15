@@ -1,4 +1,6 @@
+D|0|submit report|2025-01-22
+D|0|submit report|2025-01-25
+D|0|submit report|2025-01-29
 T|0|buy book
 T|1|buy chess
-D|0|submit report|2025-01-25
 E|0|project meeting|Monday 2pm|4pm
