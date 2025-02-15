@@ -14,7 +14,7 @@ import robert.Robert;
  */
 public class Main extends Application {
 
-    private Robert robert = new Robert("data/tasks.txt");
+    private final Robert robert = new Robert("data/tasks.txt");
 
     @Override
     public void start(Stage stage) {
