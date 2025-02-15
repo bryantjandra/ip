@@ -17,9 +17,11 @@
 }
 
 .robert-label {
-    -fx-background-color: #f2f2f2;
-    -fx-border-color: #cccccc;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-padding: 8;
+    -fx-background-color: #E8E8E8;
+    -fx-text-fill: #2B2B2B;
+    -fx-font-family: "Georgia";
+    -fx-border-color: #B2B2B2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12 10 12;
 }
