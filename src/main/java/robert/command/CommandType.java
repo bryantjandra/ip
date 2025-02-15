@@ -1,7 +1,7 @@
 package robert.command;
 
 /**
- * Represents all recognized command types in the Robert chatbot.
+ * Represents all the recognized command types in the Robert chatbot.
  */
 public enum CommandType {
     LIST,
