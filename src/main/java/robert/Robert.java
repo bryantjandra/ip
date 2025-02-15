@@ -32,7 +32,6 @@ public class Robert {
         try {
             tasks = new TaskList(storage.load());
         } catch (IOException e) {
-            // If loading fails, just start with an empty TaskList
             tasks = new TaskList();
         }
     }
@@ -45,8 +44,8 @@ public class Robert {
      * @return The multiline welcome message as a String.
      */
     public String getStartupMessage() {
-        // No divider line, as requested
-        return " Hello! I'm Robert\n What can I do for you?";
+        return "Good day, sir. I am Robert, your personal butler. "
+                + "How may I be of service today, sir?";
     }
 
     /**
@@ -62,11 +61,11 @@ public class Robert {
             CommandType commandWord = Parser.parse(input);
             switch (commandWord) {
             case BYE:
-                sb.append(" Bye. Hope to see you again soon!");
+                sb.append("Farewell, sir. I hope to see you again soon!");
                 break;
 
             case LIST:
-                sb.append(" Here are the tasks in your list:\n");
+                sb.append("Certainly, sir. Here are the tasks in your list:\n");
                 for (int i = 0; i < tasks.size(); i++) {
                     sb.append(" ").append(i + 1).append(".").append(tasks.get(i)).append("\n");
                 }
@@ -101,17 +100,21 @@ public class Robert {
                 break;
 
             case EMPTY:
-                throw new RobertException("OOPS!!! You typed an empty command!");
+                throw new RobertException("Pardon me, sir, but it appears you typed an empty command.");
+
             case SORT:
                 sb.append(handleSort());
                 break;
+
             default:
-                throw new RobertException("OOPS!!! What do you mean by that?");
+                throw new RobertException("Pardon me, sir. I am afraid I did not understand that command.");
             }
         } catch (RobertException e) {
+            // This typically means user did something invalid
             sb.append(e.getMessage());
         } catch (IOException e) {
-            sb.append("OOPS!!! Unable to save tasks!");
+            // This typically means we failed saving/loading
+            sb.append("My apologies, sir. I'm unable to save tasks at the moment!");
         }
         return sb.toString().trim();
     }
@@ -126,16 +129,16 @@ public class Robert {
      */
     private String handleTodo(String description) throws RobertException, IOException {
         if (description.isEmpty()) {
-            throw new RobertException("OOPS!!! The description of a todo should not be empty.");
+            throw new RobertException("The description of a todo cannot be empty.");
         }
         Todo t = new Todo(description);
         tasks.add(t);
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" Got it. I've added this task:\n");
+        sb.append("Certainly, sir. I have added this task:\n");
         sb.append("   ").append(t).append("\n");
-        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        sb.append("You now have ").append(tasks.size()).append(" tasks in your list, sir.");
         return sb.toString();
     }
 
@@ -149,28 +152,28 @@ public class Robert {
      */
     private String handleDeadline(String desc) throws RobertException, IOException {
         if (!desc.contains("/by")) {
-            throw new RobertException("OOPS!!! A deadline must have '/by <time>'!");
+            throw new RobertException("A deadline must have '/by <time>'.");
         }
         String[] parts = desc.split("/by");
         if (parts.length < 2) {
-            throw new RobertException("OOPS!!! A deadline must have a description and a time after '/by'.");
+            throw new RobertException("A deadline must have a description and a time after '/by'.");
         }
         String description = parts[0].trim();
         String by = parts[1].trim();
         if (description.isEmpty()) {
-            throw new RobertException("OOPS!!! The description of a deadline cannot be empty.");
+            throw new RobertException("The description of a deadline cannot be empty.");
         }
         if (by.isEmpty()) {
-            throw new RobertException("OOPS!!! The time of a deadline cannot be empty.");
+            throw new RobertException("The time of a deadline cannot be empty.");
         }
         Deadline d = new Deadline(description, by);
         tasks.add(d);
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" Got it. I've added this task:\n");
+        sb.append("Certainly, sir. I have added this task:\n");
         sb.append("   ").append(d).append("\n");
-        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        sb.append("You now have ").append(tasks.size()).append(" tasks in your list, sir.");
         return sb.toString();
     }
 
@@ -184,34 +187,34 @@ public class Robert {
      */
     private String handleEvent(String desc) throws RobertException, IOException {
         if (!desc.contains("/from") || !desc.contains("/to")) {
-            throw new RobertException("OOPS!!! An event must have '/from <start>' and '/to <end>'!");
+            throw new RobertException("An event must have '/from <start>' and '/to <end>'.");
         }
         String[] fromSplit = desc.split("/from");
         if (fromSplit.length < 2) {
-            throw new RobertException("OOPS!!! Missing '/from' portion for event.");
+            throw new RobertException("Missing '/from' portion for the event.");
         }
         String description = fromSplit[0].trim();
         String startAndEnd = fromSplit[1].trim();
         String[] toSplit = startAndEnd.split("/to");
         if (toSplit.length < 2) {
-            throw new RobertException("OOPS!!! Missing '/to' portion for event.");
+            throw new RobertException("Missing '/to' portion for the event.");
         }
         String startTime = toSplit[0].trim();
         String endTime = toSplit[1].trim();
         if (description.isEmpty()) {
-            throw new RobertException("OOPS!!! The description of an event cannot be empty.");
+            throw new RobertException("The description of an event cannot be empty.");
         }
         if (startTime.isEmpty() || endTime.isEmpty()) {
-            throw new RobertException("OOPS!!! The start and end times for an event cannot be empty.");
+            throw new RobertException("The start/end times for the event cannot be empty.");
         }
         Event e = new Event(description, startTime, endTime);
         tasks.add(e);
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" Got it. I've added this task:\n");
+        sb.append("Certainly, sir. I have added this task:\n");
         sb.append("   ").append(e).append("\n");
-        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        sb.append("You now have ").append(tasks.size()).append(" tasks in your list, sir.");
         return sb.toString();
     }
 
@@ -225,17 +228,17 @@ public class Robert {
      */
     private String handleMark(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
-            throw new RobertException("Please specify which task to mark!");
+            throw new RobertException("Please specify which task to mark.");
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("That task number is out of range, sir.");
         }
         tasks.get(taskNum - 1).markAsDone();
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" Nice! I've marked this task as done:\n");
+        sb.append("Certainly, sir. I've marked this task as done:\n");
         sb.append("   ").append(tasks.get(taskNum - 1));
         return sb.toString();
     }
@@ -250,17 +253,17 @@ public class Robert {
      */
     private String handleUnmark(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
-            throw new RobertException("Please specify which task to unmark!");
+            throw new RobertException("Please specify which task to unmark.");
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("That task number is out of range, sir.");
         }
         tasks.get(taskNum - 1).markAsNotDone();
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" OK, I've marked this task as not done yet:\n");
+        sb.append("Certainly, sir. I've marked this task as not done yet:\n");
         sb.append("   ").append(tasks.get(taskNum - 1));
         return sb.toString();
     }
@@ -275,19 +278,19 @@ public class Robert {
      */
     private String handleDelete(String arg) throws IOException, RobertException {
         if (arg.isEmpty()) {
-            throw new RobertException("Please specify which task to delete!");
+            throw new RobertException("Please specify which task to delete.");
         }
         int taskNum = Integer.parseInt(arg);
         if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new RobertException("Task number is out of range!");
+            throw new RobertException("That task number is out of range, sir.");
         }
         Task removedTask = tasks.remove(taskNum - 1);
         storage.save(tasks.getTasks());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" Noted. I've removed this task:\n");
+        sb.append("Certainly, sir. I've removed this task:\n");
         sb.append("   ").append(removedTask).append("\n");
-        sb.append(" Now you have ").append(tasks.size()).append(" tasks in the list.");
+        sb.append("You now have ").append(tasks.size()).append(" tasks in the list, sir.");
         return sb.toString();
     }
 
@@ -300,7 +303,7 @@ public class Robert {
      */
     private String handleFind(String keyword) throws RobertException {
         if (keyword.isEmpty()) {
-            throw new RobertException("OOPS!!! The find command requires a keyword!");
+            throw new RobertException("The find command requires a keyword to search for, sir.");
         }
         ArrayList<Task> matchedTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
@@ -311,15 +314,16 @@ public class Robert {
         }
 
         if (matchedTasks.isEmpty()) {
-            return " No tasks matched your search: " + keyword;
+            return "My apologies, sir. No tasks matched your search: " + keyword;
         } else {
-            StringBuilder sb = new StringBuilder(" Here are the matching tasks in your list:\n");
+            StringBuilder sb = new StringBuilder("Certainly, sir. Here are the matching tasks:\n");
             for (int i = 0; i < matchedTasks.size(); i++) {
                 sb.append(" ").append(i + 1).append(".").append(matchedTasks.get(i)).append("\n");
             }
             return sb.toString();
         }
     }
+
     /**
      * Sorts all Deadlines by ascending date, placing them first in the list,
      * followed by all other tasks in their current order.
@@ -351,8 +355,8 @@ public class Robert {
 
         storage.save(tasks.getTasks());
 
-        StringBuilder sb = new StringBuilder(" Deadlines have been sorted by date!\n");
-        sb.append(" Here is your new list:\n");
+        StringBuilder sb = new StringBuilder("Certainly, sir. Deadlines have now been sorted by date.\n");
+        sb.append("Here is your newly arranged list:\n");
         for (int i = 0; i < tasks.size(); i++) {
             sb.append(" ").append(i + 1).append(".").append(tasks.get(i)).append("\n");
         }
