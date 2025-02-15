@@ -23,7 +23,6 @@ public class Storage {
      * @param filePath The path of the file where tasks will be stored and loaded from.
      */
     public Storage(String filePath) {
-        assert filePath != null : "filePath should never be null";
         this.filePath = filePath;
     }
 
@@ -36,38 +35,66 @@ public class Storage {
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         File f = new File(filePath);
+
         if (!f.exists()) {
             f.getParentFile().mkdirs();
             f.createNewFile();
             return tasks;
         }
-        Scanner sc = new Scanner(f);
-        while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            String[] parts = line.split("\\|");
-            String type = parts[0].trim();
-            String doneFlag = parts[1].trim();
-            if (type.equals("T")) {
-                Todo t = new Todo(parts[2].trim());
-                if (doneFlag.equals("1")) {
-                    t.markAsDone();
+
+        try (Scanner sc = new Scanner(f)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                Task t = parseTaskLine(line);
+                if (t != null) {
+                    tasks.add(t);
                 }
-                tasks.add(t);
-            } else if (type.equals("D")) {
-                Deadline d = new Deadline(parts[2].trim(), parts[3].trim());
-                if (doneFlag.equals("1")) {
-                    d.markAsDone();
-                }
-                tasks.add(d);
-            } else if (type.equals("E")) {
-                Event e = new Event(parts[2].trim(), parts[3].trim(), parts[4].trim());
-                if (doneFlag.equals("1")) {
-                    e.markAsDone();
-                }
-                tasks.add(e);
             }
         }
+
         return tasks;
+    }
+
+    /**
+     * Parses a single line from storage into a Task object.
+     *
+     * @param line One line from the tasks file.
+     * @return The corresponding Task object (Todo/Deadline/Event), or null if line is invalid.
+     */
+    private Task parseTaskLine(String line) {
+        String[] parts = line.split("\\|");
+        if (parts.length < 3) {
+            return null;
+        }
+
+        String type = parts[0].trim();
+        String doneFlag = parts[1].trim();
+
+        Task task = null;
+        switch (type) {
+        case "T":
+            task = new Todo(parts[2].trim());
+            break;
+        case "D":
+            if (parts.length < 4) {
+                return null;
+            }
+            task = new Deadline(parts[2].trim(), parts[3].trim());
+            break;
+        case "E":
+            if (parts.length < 5) {
+                return null;
+            }
+            task = new Event(parts[2].trim(), parts[3].trim(), parts[4].trim());
+            break;
+        default:
+            return null;
+        }
+
+        if ("1".equals(doneFlag)) {
+            task.markAsDone();
+        }
+        return task;
     }
 
     /**
@@ -79,34 +106,31 @@ public class Storage {
     public void save(ArrayList<Task> tasks) throws IOException {
         FileWriter fw = new FileWriter(filePath);
         for (Task t : tasks) {
-            if (t instanceof Todo) {
-                fw.write("T|"
-                        + (t.getStatusIcon().equals("X") ? "1" : "0")
-                        + "|"
-                        + t.getDescription()
-                        + System.lineSeparator());
-            } else if (t instanceof Deadline) {
-                Deadline d = (Deadline) t;
-                fw.write("D|"
-                        + (d.getStatusIcon().equals("X") ? "1" : "0")
-                        + "|"
-                        + d.getDescription()
-                        + "|"
-                        + d.getByDate()
-                        + System.lineSeparator());
-            } else if (t instanceof Event) {
-                Event e = (Event) t;
-                fw.write("E|"
-                        + (e.getStatusIcon().equals("X") ? "1" : "0")
-                        + "|"
-                        + e.getDescription()
-                        + "|"
-                        + e.getStartTime()
-                        + "|"
-                        + e.getEndTime()
-                        + System.lineSeparator());
-            }
+            fw.write(convertTaskToString(t) + System.lineSeparator());
         }
         fw.close();
+    }
+
+    /**
+     * Converts a Task to a storage-friendly string representation.
+     *
+     * @param t A Task object (Todo, Deadline, or Event).
+     * @return A line to be written into the storage file.
+     */
+    private String convertTaskToString(Task t) {
+        String doneFlag = t.getStatusIcon().equals("X") ? "1" : "0";
+
+        if (t instanceof Todo) {
+            return "T|" + doneFlag + "|" + t.getDescription();
+        } else if (t instanceof Deadline) {
+            Deadline d = (Deadline) t;
+            return "D|" + doneFlag + "|" + d.getDescription() + "|" + d.getByDate();
+        } else if (t instanceof Event) {
+            Event e = (Event) t;
+            return "E|" + doneFlag + "|" + e.getDescription() + "|" + e.getStartTime() + "|" + e.getEndTime();
+        } else {
+            // Ideally shouldn't happen if we only have Todo, Deadline, Event
+            return "";
+        }
     }
 }
