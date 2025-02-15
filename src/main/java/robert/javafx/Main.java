@@ -25,7 +25,7 @@ public class Main extends Application {
             Scene scene = new Scene(ap);
             stage.setScene(scene);
             stage.setTitle("Robert Chatbot");
-            stage.setResizable(false);
+            stage.setResizable(true);
 
             MainWindow controller = fxmlLoader.<MainWindow>getController();
             controller.setRobert(robert);
